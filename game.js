@@ -12,7 +12,13 @@ window.onload = function(){
     canvas.height = window.innerHeight;
     document.body.appendChild(canvas);
     gameStart();
+    createMap();
+    
+    map[0][10]=1;
+    
     setInterval(()=>{
+        tank.update();
+        bullets.update();
         gameUpdate();
         gameDrawer(context);
     }, 17);
@@ -20,7 +26,7 @@ window.onload = function(){
 
 function gameStart(){
     tank = new Tank(100,100);
-    bullets = new Bullets(1,0,1);
+    bullets = new Bullets(0,0,1);
 }
 
 function gameDrawer(context){
@@ -28,16 +34,12 @@ function gameDrawer(context){
     context.fillRect(0,0,window.innerWidth,window.innerHeight);
     tank.draw(context);
     bullets.draw(context);
+    drawmap(context);
 }
 
 function gameUpdate(){
     tank.update();
     bullets.update();
-}
-
-function gameLoop(){
-    gameUpdate();
-    gameDrawer(context);
 }
 
 window.onkeydown = function(e){
@@ -86,6 +88,13 @@ window.onkeyup = function(e){
             if (tank.speedX > 0) {
                 tank.speedX = 0;
                 tank.sprite = tank.spriteRight;
+            }
+            break;
+        case 32:
+            if(bullets.speedX != 0 || bullets.speedY !=0){
+                bullets.speedX = 0;
+                bullets.speedY = 0;
+                bullets.fire(tank.direction);
             }
             break;
     }
